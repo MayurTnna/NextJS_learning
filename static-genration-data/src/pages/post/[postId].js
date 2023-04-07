@@ -1,4 +1,11 @@
+import { useRouter } from "next/router";
+
+useRouter
 const Post = ({ post }) => {
+    const router = useRouter()
+    if(router.isFallback){
+        return <h1>Loading...</h1>
+    }
   return (
     <div>
       Post fetched dynamically
@@ -44,7 +51,7 @@ export async function getStaticPaths() {
     params: { postId: post.id.toString() },
   }));
 
-  return { paths, fallback: false };
+  return { paths, fallback: true };
 }
 
 export async function getStaticProps(context) {
@@ -81,6 +88,43 @@ export async function getStaticProps(context) {
 
 // 3. In the background, Next.js will statically generate the requested path HTML and JSON. This
 // includes running getStaticProps.
+
+// getStaticPaths fallback: true
+
+// 1. The paths returned from getStaticPaths will be rendered to HTML at build time by
+// getStaticProps.
+
+// 2. The paths that have not been generated at build time will not result in a 404 page. Instead,
+// Next.js will serve a “fallback” version of the page on the first request to such a path.
+
+// 3. In the background, Next.js will statically generate the requested path HTML and JSON. This
+// includes running getStaticProps.
+
+// 4, When that’s done, the browser receives the JSON for the generated path. This will be used to
+// automatically render the page with the required props. From the user’s perspective, the page
+// will be swapped from the fallback page to the full page.
+
+// 5, At the same time, Next,js keeps track of the new list of pre-rendered pages. Subsequent
+// requests to the same path will serve the generated page, just like other pages pre-rendered at
+// build time.
+
+
+// Incremental Static Regeneration
+
+// There was a need to update only those pages which needed a change without having to rebuild
+// the entire app
+
+// Incremental Static Regeneration (ISR)
+// With ISR, Next.js allows you to update static pages after you've built your application
+
+// You can statically generate individual pages without needing to rebuild the entire site, effectively
+// solving the issue of dealing with stale data
+
+// How?
+// In the getStaticProps function, apart from the props key, we can specify a revalidate key
+
+// The value for revalidate is the number of seconds after which a page re-generation can occur
+ 
 
 
 
